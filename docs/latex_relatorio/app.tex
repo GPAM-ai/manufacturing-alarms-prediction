@@ -1,0 +1,127 @@
+\section{Desafios Científicos e Tecnológicos do Projeto}
+\label{sec:apendice-desafios}
+
+Este apêndice reúne, para referência e registro histórico, o detalhamento dos desafios científicos e tecnológicos e o planejamento metodológico originalmente elaborados para o projeto, complementando a descrição da metodologia efetivamente aplicada nas Seções~\ref{sec:eda}, \ref{sec:features} e \ref{sec:modelagem}.
+
+A adoção de conceitos da Indústria 4.0 têm melhorado a produtividade industrial e a tornado mais sustentável e profundamente intrínseca à ciência de dados. Graças às tecnologias de detecção no ambiente fabril, a fábrica automotiva parceira do projeto gera dados minuciosos sobre a ocorrência de falhas e acionamento de alarmes, com o tempo de duração das paradas não programadas (TTR), código de motivo do alarme, bem como a localização das falhas no ambiente fabril, compreendida pela estação, linha de produção e máquina.
+
+Com esses dados, há oportunidade de analisá-los e, a partir disso, desenvolver modelos de ML que contribuam para a manutenção preditiva da fábrica, que proporcionará uma gestão mais eficiente da manutenção dos ativos, um fator determinante para garantir níveis ainda maiores de produtividade, qualidade e competitividade.
+
+O projeto visa explorar amplamente os dados históricos já existentes, propondo modelos que melhoram mês a mês, com a geração de novos dados, contribuindo para mitigar os problemas descritos anteriormente. No processo, o aluno de iniciação científica fará uso de técnicas de ciência de dados e modelagem preditiva, visando transformar esses dados em informações que antecipem falhas, diminuam riscos e aumentem a vida útil dos ativos.
+
+Portanto, este projeto de Iniciação Científica tem relevância prática, uma vez que trará ferramentas úteis para a fábrica, que tornarão suas linhas de produção mais eficientes, bem como relevância acadêmica, uma vez que as técnicas propostas podem ser aplicadas aos outros parceiros do projeto. Desse modo, o aluno teve contato com técnicas avançadas de análise exploratória de dados e desenvolveu competências em ML durante o processo de criação dos modelos preditivos, assim como a indústria, que poderá incorporar as metodologias desenvolvidas neste projeto em seu processo produtivo.
+
+\subsection{Desafios Científicos e Tecnológicos}
+\label{sec:apendice-desafios-cientificos}
+
+Um dos primeiros desafios científicos enfrentados é o tratamento do grande volume de dados, os quais apresentam registros incompletos, ruídos, duplicações e ausência de padronização entre diferentes fontes (como falhas e alarmes). Realizar uma análise exploratória robusta exige identificar as variáveis mais relevantes, entender a relação entre elas e encontrar formas eficazes de representar o comportamento das falhas no tempo e no espaço, o que requer um conhecimento profundo sobre os dados, bem como domínio de técnicas estatísticas e computacionais de pré-processamento e visualização.
+
+Outro desafio importante é a identificação de anomalias nos dados, como em situações em que o comportamento das variáveis se altera com base em contextos específicos, como linha de produção, turno, estação ou tipo de falha. É necessário empregar técnicas avançadas, como análise de séries temporais e detecção de outliers. A seleção dessas ferramentas demanda experimentação e avaliação contínua, visto que o comportamento de alarmes e falhas pode não seguir uma distribuição usual.
+
+Além disso, existe a necessidade de encontrar trabalhos similares como bases bibliográficas e, uma vez que a aplicação de ciência de dados e ML em fábricas automotivas ainda é um campo em expansão, existem poucos estudos disponíveis em domínio público, sobretudo com dados reais de fábricas brasileiras. Dessa forma, isso exige um esforço de pesquisa para buscar publicações acadêmicas, relatórios industriais e \textit{benchmarks} internacionais nos quais a metodologia do projeto possa se embasar.
+
+No desenvolvimento dos modelos preditivos, os desafios se intensificam, especialmente no que diz respeito à definição de variáveis-chave e correlação com fatores externos, já que nem todas as falhas possuem um histórico claro de antecedentes ou um número suficiente de exemplos para o aprendizado supervisionado. A construção de modelos eficazes exige a comparação de diferentes abordagens, como modelos baseados em árvores (Random Forest, Decision Tree), séries temporais (Prophet) e arquiteturas mais complexas, como redes neurais convolucionais ou recorrentes.
+
+Por fim, garantir que os modelos desenvolvidos sejam interpretáveis e aplicáveis no ambiente industrial é o desafio definitivo. Não basta apenas alcançar bons resultados preditivos, é essencial que os modelos sejam facilmente compreendidos e aplicáveis.
+
+
+\section{Detalhamento da Metodologia Planejada}
+\label{sec:apendice-metodologia}
+
+\subsection{Visão Geral}
+\label{sec:apendice-plan}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\linewidth]{METODOLOGIA.png}
+    \caption{Esquema visual da metodologia do projeto: (a) temos a espiral integral dos sistemas de manutenção preditiva; (b) a série acumulada mensal de falhas para análise exploratória; (c) perspectiva da arquitetura (volume, variedade, valor), com as fases de detecção de anomalias e desenvolvimento dos modelos preditivos.}
+    \label{fig:metodologia}
+\end{figure}
+
+Na Figura~\ref{fig:metodologia} temos a metodologia do projeto resumindo as etapas e desafios técnicos e científicos originalmente planejados para a proposta.
+A princípio, foram utilizados dois conjuntos de dados fornecidos pela fábrica parceira:
+
+\begin{enumerate}
+\item Registros de acionamento de alarmes;
+\item Registros de falhas operacionais.
+\end{enumerate}
+
+A análise dos dados e o processamento dos modelos foram realizados utilizando bibliotecas de Python, como Pandas, Numpy, Matplotlib, Seaborn e Scikit-learn.
+
+\subsection{Coleta e Processamento de Dados}
+\label{sec:apendice-coleta}
+
+Os dados em questão são provenientes das tecnologias de detecção, recursos da Indústria 4.0, dos sistemas de supervisão, controle e gestão da produção da planta. Por exemplo, na Figura~\ref{fig:serie_temporal} temos a série temporal de eventos de alarmes de falhas, acumulados por meses, registrados entre os anos 2020 a 2025.
+
+A primeira etapa consistiu na filtragem, organização e entendimento dos dados, tarefa realizada:
+
+\begin{itemize}
+\item Utilizando a data e a hora dos eventos para gerar séries temporais;
+\item Utilizando a descrição das falhas para encontrar falhas recorrentes e gerar níveis de classificação;
+\item Utilizando a localização das máquinas --- linha, estação e tecnologia --- para encontrar padrões de falha.
+\end{itemize}
+
+Neste processo, os dados também foram normalizados para garantir que variáveis de diferentes escalas não introduzissem viés nos modelos de Machine Learning. Foi aplicada a normalização por Z-Score, que padroniza os dados subtraindo a média e dividindo pelo desvio padrão de cada termo.
+
+Além disso, valores ausentes foram tratados, seja por exclusão ou imputação, e outliers foram identificados para evitar distorções na modelagem. As informações mais relevantes foram utilizadas para a detecção de padrões e o desenvolvimento de painéis interativos que ajudam a entender os dados, como o gráfico abaixo, que é uma série temporal do número de acionamentos de alarmes na fábrica:
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{Série temporal de alarmes.png}
+    \caption{Série Temporal de Alarmes}
+    \label{fig:serie_temporal}
+\end{figure}
+
+Após garantir que os dados estivessem prontos para uso, foram aplicadas técnicas de análise exploratória para:
+
+\begin{itemize}
+\item Identificar padrões de comportamento das falhas e alarmes;
+\item Realizar análises temporais gerais e específicas, como por tipo de máquina ou estação;
+\item Criação de variáveis derivadas dos dados, como frequência semanal de alarmes e tempo entre falhas;
+\item Identificar fatores externos testando a correlação destes com os grupos de dados tratados;
+\item Encontrar variáveis relevantes para a predição;
+\item Utilizar visualizações como heatmaps, histogramas e gráficos de dispersão para facilitar o entendimento;
+\end{itemize}
+
+Dentre as atividades desenvolvidas nesta etapa exploratória inicial, obtiveram-se alguns gráficos que revelam tendências relevantes, como o turno de produção que mais apresenta falhas, as máquinas que mais acionam alarmes ou a tendência de tempo de parada não programada por falha, como apresentado na Figura~\ref{fig:histograma}. Esses achados exploratórios preliminares foram posteriormente aprofundados e refinados na análise exploratória de dados descrita na Seção~\ref{sec:eda}.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{falhas_turno_tabela2.png}
+        \caption{Histograma de falhas por turno fabril}
+        \label{fig:falhas_turno}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{ttr_tabela2.png}
+        \caption{Histograma do tempo de parada não programada (TTR) gerado por falhas}
+        \label{fig:ttr_falhas}
+    \end{subfigure}
+    \caption{Comparação entre o número de falhas por turno e o tempo de parada não programada (TTR) gerado por falhas.}
+    \label{fig:histograma}
+\end{figure}
+
+Observa-se que a representação visual foi importante para entender os dados e padrões para fazer recomendações de manutenção das falhas recorrentes, bem como facilitou a compreensão das melhores ferramentas a serem utilizadas para o desenvolvimento de modelos de predição precisos e eficientes.
+
+\subsection{Desenvolvimento dos Modelos}
+\label{sec:apendice-desenvolvimento}
+
+O desenvolvimento dos modelos preditivos neste projeto foi planejado para ser conduzido a partir de uma abordagem sistemática. Inicialmente, os dados de acionamento de alarmes e registros de falhas da fábrica seriam tratados por meio de técnicas de limpeza, padronização e transformação de variáveis, garantindo consistência e qualidade para as etapas subsequentes. Em seguida, seriam aplicadas técnicas de extração de indicadores temporais (hora, dia da semana, mês e estação de produção), cálculo do tempo entre falhas, frequência de alarmes e agregação por máquina e linha de produção.
+
+Com a base de dados consolidada, diferentes algoritmos de aprendizado supervisionado e não supervisionado seriam avaliados, incluindo árvores de decisão, random forests, gradient boosting, redes neurais artificiais e modelos baseados em séries temporais, como LSTM e Prophet, dependendo do tipo de predição considerada (ocorrência de falha, tempo até a próxima falha ou intensidade de acionamentos de alarmes). O treinamento dos modelos seria realizado em ambiente controlado, utilizando técnicas de validação cruzada e métricas adequadas ao problema, como acurácia, F1-score, precisão, recall e, no caso de séries temporais, o erro médio absoluto (MAE) e a raiz do erro quadrático médio (RMSE).
+
+A comparação entre os diferentes modelos permitiria identificar quais técnicas apresentam maior potencial para generalização e robustez, possibilitando a seleção daqueles que mais se alinham aos objetivos de manutenção preditiva da fábrica. Por fim, os modelos escolhidos seriam interpretados e avaliados em termos de aplicabilidade prática, buscando não apenas a acurácia estatística, mas também a capacidade de gerar \textit{insights} acionáveis para engenheiros e gestores de manutenção, contribuindo para a redução de paradas não programadas e para a eficiência do processo produtivo.
+
+A abordagem efetivamente adotada na modelagem preditiva final, incluindo o refinamento da variável-alvo com base no IAT (Seção~\ref{sec:eda}) e os modelos Random Forest, XGBoost e LSTM (Seção~\ref{sec:revisao-literatura}), encontra-se descrita na Seção~\ref{sec:modelagem}.
+
+\subsection{Validação dos Modelos}
+\label{sec:apendice-validacao}
+
+A validação dos modelos constitui uma etapa crítica para assegurar a confiabilidade das previsões e a aplicabilidade prática dos resultados obtidos. Para este projeto, foram planejadas diferentes estratégias de validação, conforme a natureza dos dados analisados. No caso das séries temporais, em que a ordem cronológica dos eventos deve ser preservada, seriam aplicadas técnicas específicas como a validação temporal, em que o treinamento é realizado em janelas históricas de dados e o teste em períodos futuros, respeitando o fluxo real da linha de produção. Já para modelos de classificação ou regressão baseados em atributos derivados dos alarmes e falhas, seria utilizada a validação cruzada k-fold, que permite reduzir a variabilidade dos resultados ao dividir os dados em subconjuntos e calcular o desempenho médio ao longo das repetições.
+
+Quanto à avaliação de desempenho, seriam utilizadas métricas distintas conforme o objetivo da predição. Para modelos de classificação de falhas, seriam aplicadas acurácia, precisão, recall e F1-score, métricas que permitem avaliar tanto a proporção de acertos globais quanto a capacidade de o modelo identificar corretamente ocorrências positivas (falhas reais) e negativas (não falhas). Para modelos de regressão ou séries temporais, as métricas selecionadas incluiriam o Erro Absoluto Médio (MAE), a Raiz do Erro Quadrático Médio (RMSE) e o Erro Percentual Absoluto Médio (MAPE), que fornecem uma interpretação direta sobre a discrepância entre valores observados e previstos.
+
+Além disso, métricas gráficas como curvas de Precision-Recall e Matriz de Confusão seriam utilizadas para complementar a análise de classificadores, oferecendo uma visão mais detalhada do comportamento dos modelos em diferentes cenários. A estratégia de validação temporal efetivamente empregada no modelo final está descrita na Seção~\ref{sec:modelagem}.

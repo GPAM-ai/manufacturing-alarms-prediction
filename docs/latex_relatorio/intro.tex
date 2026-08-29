@@ -1,0 +1,71 @@
+\section{Introdução}
+\label{sec:introducao}
+
+\subsection{Contextualização e Motivação}
+
+A Indústria 4.0 ampliou a disponibilidade de dados operacionais e a aplicação de métodos preditivos na manufatura. Entre essas aplicações, a manutenção preditiva busca antecipar condições anormais e orientar intervenções antes que ocorram interrupções de produção~\cite{pdm_challenges,pdm_models}. Em linhas automotivas altamente automatizadas, essa necessidade é especialmente relevante porque alarmes sucessivos podem sobrecarregar os operadores, dificultar a identificação da causa inicial e comprometer a continuidade do processo~\cite{rahaman2025alarmfloods}.
+
+Esta pesquisa investiga registros reais de alarmes emitidos por máquinas de soldagem da área de \textit{Body-in-White} (BiW) de uma planta automotiva parceira, entre janeiro de 2020 e maio de 2025. O trabalho foi desenvolvido no PIBITI da Universidade Federal de São Paulo (UNIFESP), campus São José dos Campos, em parceria com pesquisa dirigida pela FAPESP (proc. 2020/09850-0). Busca-se caracterizar os padrões temporais desses eventos e prever a intensidade diária de recorrências rápidas. Como a base não contém um rótulo de cascata, adota-se como variável-alvo o número diário de alarmes ocorridos menos de 30 minutos após o evento anterior da mesma máquina. Essa medida funciona como uma \textit{proxy} quantitativa de concentração temporal, sem pressupor propagação causal entre equipamentos.
+
+\subsection{Objetivos}
+
+\subsubsection{Objetivo Geral}
+
+Desenvolver uma metodologia reproduzível de análise e modelagem de alarmes industriais para prever a quantidade diária de recorrências com IAT inferior a 30 minutos, produzindo um modelo que possa apoiar o planejamento da manutenção na planta parceira.
+
+\subsubsection{Objetivos Específicos}
+
+Para alcançar esse objetivo, foram definidos os seguintes objetivos específicos:
+
+\begin{enumerate}
+    \item Caracterizar a estrutura, a distribuição temporal e as limitações do \textit{dataset}.
+    \item Diagnosticar os hiatos da série e avaliar seu efeito sobre a continuidade dos dados.
+    \item Investigar recorrências por máquina e turno de produção.
+    \item Identificar tendências, sazonalidades e anomalias temporais na série diária.
+    \item Avaliar a associação dos alarmes com variáveis macroeconômicas candidatas.
+    \item Analisar a autocorrelação e selecionar defasagens potencialmente preditivas.
+    \item Construir um conjunto simples e outro completo de \textit{features} a partir dos resultados da análise exploratória.
+    \item Comparar modelos de regressão, analisar a importância das \textit{features} e selecionar uma solução compatível com a aplicação industrial.
+\end{enumerate}
+
+\subsection{Estrutura do Relatório}
+
+Após esta introdução, a Seção~\ref{sec:revisao-literatura} reúne os fundamentos e trabalhos relacionados; a Seção~\ref{sec:dados} descreve os dados; a Seção~\ref{sec:eda} apresenta a análise exploratória; a Seção~\ref{sec:features} trata da engenharia de \textit{features}; e a Seção~\ref{sec:modelagem} expõe a modelagem e os resultados. As Seções~\ref{sec:discussao} e~\ref{sec:conclusao} discutem as contribuições, implicações, limitações, conclusões e trabalhos futuros.
+
+\section{Revisão da Literatura}
+\label{sec:revisao-literatura}
+
+\subsection{Manutenção Preditiva e Alarmes Industriais}
+
+A manutenção preditiva utiliza dados operacionais para apoiar intervenções antes da ocorrência de eventos críticos. Sua aplicação depende da qualidade dos dados, de uma engenharia de \textit{features} adequada e da seleção de modelos compatíveis com o processo industrial~\cite{pdm_models,carvalho2019systematic,hector2024predictive}. Apesar do avanço da área, estudos baseados em dados reais de plantas em operação ainda são menos frequentes que experimentos com dados simulados ou laboratoriais~\cite{pdm4.0}.
+
+Segundo a IEC 62682, um alarme indica uma condição anormal que requer resposta do operador~\cite{iec62682_2022}. Quando muitos eventos ocorrem em sequência, o volume pode dificultar a priorização e a identificação da origem do problema, situação relacionada a \textit{alarm floods} e regimes de cascata~\cite{isa18_2_2009,rahaman2025alarmfloods}. Como os dados deste trabalho não identificam diretamente tais regimes, a concentração temporal é representada pelo número diário de recorrências com IAT inferior a 30 minutos.
+
+\subsection{Séries Temporais e Modelagem Preditiva}
+
+Séries temporais permitem representar a evolução de processos industriais e investigar tendências, sazonalidades, descontinuidades e dependências entre observações. Em manutenção preditiva, essas propriedades podem ser convertidas em variáveis de calendário e defasagens do histórico operacional, desde que a validação preserve a ordem cronológica dos dados~\cite{pdm_time_series,farahani2024timeseries}.
+
+O \textit{Random Forest} combina árvores de decisão treinadas sobre diferentes amostras~\cite{breiman2001randomforest,biau2012randomforests}, enquanto o XGBoost constrói árvores sequencialmente para corrigir os erros das anteriores~\cite{chen2016xgboost}. Ambos são adequados a dados tabulares, capturam relações não lineares e fornecem medidas de importância das variáveis. Por essas características, foram comparados neste trabalho nos conjuntos simples e completo de \textit{features}.
+
+\subsection{Trabalhos Relacionados e Lacuna de Pesquisa}
+
+Trabalhos anteriores discutem a aplicação de aprendizado de máquina à manutenção preditiva, a comparação entre desempenho e interpretabilidade e a integração de modelos aos sistemas industriais~\cite{pdm_classifiers,pdm_models,zhao2025milling}. Entretanto, há pouca literatura dedicada à previsão de concentrações de alarmes com dados reais fabris, especialmente quando não existe rótulo explícito de cascata. Esta pesquisa contribui nesse espaço ao documentar a preparação, a análise temporal e a modelagem de uma base real da planta parceira, preservando suas limitações operacionais.
+
+\section{Dados}
+\label{sec:dados}
+
+\subsection{Contexto e Descrição do \textit{Dataset}}
+
+A área \textit{Body-in-White} corresponde à etapa da fabricação automotiva em que componentes metálicos são unidos para formar a carroceria antes da pintura e da montagem final~\cite{ssab_biw_soldagem}. Por concentrar operações automatizadas de soldagem, sua continuidade depende do funcionamento coordenado das máquinas; alarmes recorrentes podem indicar condições que demandam atenção da equipe de manutenção.
+
+O arquivo disponibilizado pela empresa parceira contém 88.414 registros de alarmes entre 11 de janeiro de 2020 e 16 de maio de 2025. Após a remoção de três duplicatas, foram mantidos 88.411 eventos de 20 máquinas, distribuídos entre as linhas TDF, com 50.368 registros, e TLF, com 38.043. A agregação diária cobre 1.953 dias: 1.528 apresentam pelo menos um evento e 425 não possuem alarmes registrados.
+
+Cada linha representa um evento e contém o instante de ocorrência, a linha, a máquina, o segmento operacional (\textit{trato}), a \textit{bilancella}, a posição e três códigos de alarme, além de dois campos constantes de identificação da área e da estação. O \textit{timestamp} e a máquina permitem ordenar os eventos, calcular o IAT e construir a variável-alvo. Para a modelagem final, os demais campos operacionais não foram utilizados por falta de evidência de relevância e de documentação semântica suficiente.
+
+\subsection{Limitações dos Dados}
+
+A base não informa duração, severidade, causa ou consequência operacional dos alarmes. Também não contém um rótulo de cascata; por isso, o alvo baseado em IAT inferior a 30 minutos mede recorrência rápida, mas não comprova relação causal entre eventos ou impacto sobre a produção.
+
+Os dias sem registros não podem ser interpretados automaticamente como operação normal. A série contém paradas conhecidas e hiatos sem causa validada, incluindo intervalos de 70 e 90 dias. Esses períodos são mantidos como informação de indisponibilidade e tratados explicitamente por indicadores de qualidade na engenharia de \textit{features}.
+
+Por fim, os dados provêm de uma única planta e de duas linhas da área BiW. Os padrões encontrados podem depender das máquinas, do calendário e das práticas de registro locais, de modo que a generalização para outros ambientes exige nova validação.
