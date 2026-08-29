@@ -355,4 +355,6 @@ Outra linha prioritária é aprofundar o estudo das variáveis nativas que não 
 Também se recomenda construir uma classificação de severidade dos alarmes e obter rótulos operacionais associados a intervenções, paradas ou perda de produção. Com essas informações, o alvo poderá ponderar recorrências por criticidade e aproximar-se do impacto real sobre a manutenção. A definição de cascata baseada em IAT poderá então ser confrontada com avaliações de especialistas e com relações entre máquinas, permitindo distinguir mera concentração temporal de propagação operacional.
 
 Por fim, modelos específicos para a assimetria e os eventos extremos devem ser investigados. Abordagens em duas etapas, com separação entre ocorrência de baixa atividade e previsão da intensidade positiva, funções de perda ponderadas ou modelos orientados a quantis podem reduzir a tendência de regressão à média observada neste trabalho. Paralelamente, um piloto prospectivo do modelo simples na planta parceira permitiria registrar previsões diariamente, definir limiares de alerta com a equipe de manutenção e avaliar se o sinal produzido contribui efetivamente para decisões operacionais.
+
 # Referências
+Todas as referências deste projeto estão documentadas em `docs/latex_relatorio/references.bib`
