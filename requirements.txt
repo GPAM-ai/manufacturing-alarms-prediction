@@ -7,4 +7,5 @@ scipy>=1.7
 statsmodels>=0.13
 xgboost>=1.6
 joblib
+torch>=2.0
 
