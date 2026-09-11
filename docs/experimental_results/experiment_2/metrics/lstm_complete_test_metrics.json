@@ -1,0 +1,18 @@
+{
+  "Rows": 359,
+  "MAE": 13.455813178541824,
+  "RMSE": 20.002133465906088,
+  "R2": -0.6765930881381885,
+  "PoissonDeviance": 44.43544890012716,
+  "MeanActual": 10.7966573816156,
+  "MeanPredicted": 14.995563277889982,
+  "Model": "lstm",
+  "Dataset": "complete",
+  "Seeds": 3,
+  "WindowSize": 14,
+  "Test_start": "2024-05-17T00:00:00-03:00",
+  "Test_end": "2025-05-16T00:00:00-03:00",
+  "OptimizationSeconds": 960.1685549000031,
+  "RefitSeconds": 39.98676870000054,
+  "TotalExperimentSeconds": 1000.1553236000036
+}

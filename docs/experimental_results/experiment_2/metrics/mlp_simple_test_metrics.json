@@ -1,0 +1,17 @@
+{
+  "Rows": 359,
+  "MAE": 8.448962957386408,
+  "RMSE": 15.858205925800691,
+  "R2": -0.05386052179287204,
+  "PoissonDeviance": 24.38314500793882,
+  "MeanActual": 10.7966573816156,
+  "MeanPredicted": 6.1244646195969095,
+  "Model": "mlp",
+  "Dataset": "simple",
+  "Seeds": 3,
+  "Test_start": "2024-05-17T00:00:00-03:00",
+  "Test_end": "2025-05-16T00:00:00-03:00",
+  "OptimizationSeconds": 431.1592635000052,
+  "RefitSeconds": 6.441127899997809,
+  "TotalExperimentSeconds": 437.600391400003
+}
