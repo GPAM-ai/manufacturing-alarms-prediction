@@ -385,6 +385,7 @@ def optimize_mlp(
     fold. Each trial is evaluated across every fold and seed. The default TPE
     sampler explores a conditional architecture, while the median pruner can
     stop trials based on intermediate validation MAE.
+    ``verbose=True`` suppresses logs; ``False`` prints the selected trial.
 
     Returns:
         dict: Optuna study, best parameters, trial/run/fold metrics, elapsed
@@ -544,7 +545,7 @@ def optimize_mlp(
         return cv_mae_mean
 
     previous_verbosity = optuna.logging.get_verbosity()
-    if not verbose:
+    if verbose:
         optuna.logging.set_verbosity(optuna.logging.WARNING)
     try:
         study = optuna.create_study(
@@ -586,7 +587,7 @@ def optimize_mlp(
     )
     best_params = dict(best_trial.user_attrs['resolved_params'])
     best_params['hidden_sizes'] = tuple(best_params['hidden_sizes'])
-    if verbose:
+    if not verbose:
         print(
             f'[LOG] Optuna selected MLP trial {best_trial.number} '
             f'(CV MAE={best_trial.value:.3f}, time={search_seconds:.1f}s, '

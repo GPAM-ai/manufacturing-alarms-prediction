@@ -74,19 +74,21 @@ def prepare_neural_feature_sets(
     validation_days=180,
     step_days=180,
     min_validation_rows=30,
+    verbose=True,
 ):
     """Prepare aligned simple and complete data for neural experiments.
 
     The final holdout and expanding-window folds are defined from the simple
     feature set and reused by position for the complete set after their dates
     and targets have been verified as identical. No model is trained here.
+    ``verbose=True`` suppresses all preparation logs.
 
     Returns:
         dict: Prepared data for the ``simple`` and ``complete`` experiments.
     """
     paths = _resolve_feature_paths(feature_paths)
     datasets = {
-        name: load_feature_dataset(path)
+        name: load_feature_dataset(path, verbose=verbose)
         for name, path in paths.items()
     }
     validate_aligned_datasets(datasets['simple'], datasets['complete'])
@@ -95,11 +97,13 @@ def prepare_neural_feature_sets(
         datasets['simple'],
         test_days=test_days,
         min_test_rows=min_test_rows,
+        verbose=verbose,
     )
     development_complete, test_complete, _ = split_final_holdout(
         datasets['complete'],
         test_days=test_days,
         min_test_rows=min_test_rows,
+        verbose=verbose,
     )
     validate_aligned_datasets(development_simple, development_complete)
     validate_aligned_datasets(test_simple, test_complete)
@@ -110,6 +114,7 @@ def prepare_neural_feature_sets(
         validation_days=validation_days,
         step_days=step_days,
         min_validation_rows=min_validation_rows,
+        verbose=verbose,
     )
     split_copies = tuple(
         (train_index.copy(), validation_index.copy())

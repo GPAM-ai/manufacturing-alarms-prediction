@@ -227,6 +227,7 @@ def train_lstm_experiment(
     selected configuration is fitted once per seed on all development windows.
     Holdout windows retain development observations as their historical context,
     while the scaler remains fitted exclusively on development features.
+    ``verbose=True`` suppresses logs throughout this workflow.
     """
     if experiment.get('model_name') != 'lstm':
         raise ValueError('train_lstm_experiment requires an LSTM experiment')
@@ -343,7 +344,7 @@ def train_lstm_experiment(
     })
     predictions['Residual'] = predictions['Actual'] - predictions['Predicted']
 
-    if verbose:
+    if not verbose:
         print(
             f"[LOG] LSTM/{experiment['feature_set']}: "
             f"test MAE={ensemble_metrics['MAE']:.3f}, "
@@ -429,8 +430,8 @@ def _build_checkpoint(experiment):
     }
 
 
-def save_lstm_experiment_artifacts(experiment, output_dir):
-    """Save an LSTM checkpoint, metrics, validation, and diagnostics."""
+def save_lstm_experiment_artifacts(experiment, output_dir, verbose=True):
+    """Save LSTM artifacts, suppressing path logs when ``verbose=True``."""
     if experiment.get('model_name') != 'lstm':
         raise ValueError('Only LSTM experiment results can be saved here')
     directories = prepare_modeling_artifact_directories(Path(output_dir))
@@ -516,7 +517,8 @@ def save_lstm_experiment_artifacts(experiment, output_dir):
         json.dumps(metadata, indent=2, ensure_ascii=False),
         encoding='utf-8',
     )
-    print(f'[LOG] Saved LSTM artifacts under {Path(output_dir)}')
+    if not verbose:
+        print(f'[LOG] Saved LSTM artifacts under {Path(output_dir)}')
     return paths
 
 

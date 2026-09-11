@@ -144,8 +144,8 @@ def get_feature_columns(dataset):
     ]
 
 
-def load_feature_dataset(path, timezone='America/Recife'):
-    """Load and validate a model-ready feature table in chronological order."""
+def load_feature_dataset(path, timezone='America/Recife', verbose=True):
+    """Load a feature table, suppressing path logs when ``verbose=True``."""
     dataset_path = Path(path)
     dataset = pd.read_csv(dataset_path)
 
@@ -183,12 +183,17 @@ def load_feature_dataset(path, timezone='America/Recife'):
     unavailable = int(dataset[TARGET_AVAILABLE_COL].eq(0).sum())
     if unavailable:
         dataset = dataset.loc[dataset[TARGET_AVAILABLE_COL].eq(1)].reset_index(drop=True)
-        print(f'[LOG] Excluded {unavailable:,} target-unavailable row(s) from {dataset_path}')
+        if not verbose:
+            print(
+                f'[LOG] Excluded {unavailable:,} target-unavailable row(s) '
+                f'from {dataset_path}'
+            )
 
-    print(
-        f'[LOG] Loaded {dataset_path}: {len(dataset):,} rows x '
-        f'{len(feature_columns)} predictors'
-    )
+    if not verbose:
+        print(
+            f'[LOG] Loaded {dataset_path}: {len(dataset):,} rows x '
+            f'{len(feature_columns)} predictors'
+        )
     return dataset
 
 
@@ -201,8 +206,13 @@ def validate_aligned_datasets(simple_dataset, complete_dataset):
     return True
 
 
-def split_final_holdout(dataset, test_days=DEFAULT_TEST_DAYS, min_test_rows=30):
-    """Reserve the last ``test_days`` calendar days as an untouched final test."""
+def split_final_holdout(
+    dataset,
+    test_days=DEFAULT_TEST_DAYS,
+    min_test_rows=30,
+    verbose=True,
+):
+    """Reserve the final test; ``verbose=True`` suppresses logs."""
     if test_days < 1:
         raise ValueError('test_days must be positive')
     if min_test_rows < 1:
@@ -233,10 +243,11 @@ def split_final_holdout(dataset, test_days=DEFAULT_TEST_DAYS, min_test_rows=30):
         'Test_rows': len(test),
         'Test_calendar_days': test_days,
     }])
-    print(
-        f'[LOG] Final test isolated: {test[DATE_COL].min().date()} to '
-        f'{test[DATE_COL].max().date()} ({len(test):,} available rows)'
-    )
+    if not verbose:
+        print(
+            f'[LOG] Final test isolated: {test[DATE_COL].min().date()} to '
+            f'{test[DATE_COL].max().date()} ({len(test):,} available rows)'
+        )
     return development, test, summary
 
 
@@ -246,8 +257,9 @@ def build_expanding_validation(
     validation_days=180,
     step_days=180,
     min_validation_rows=30,
+    verbose=True,
 ):
-    """Create expanding-window folds inside the development period."""
+    """Create expanding folds; ``verbose=True`` suppresses logs."""
     if initial_train_days < 1 or validation_days < 1 or step_days < 1:
         raise ValueError('Window sizes must be positive')
     if min_validation_rows < 1:
@@ -296,7 +308,8 @@ def build_expanding_validation(
     if not splits:
         raise ValueError('No valid expanding-window split could be created')
     summary = pd.DataFrame(summary_rows)
-    print(f'[LOG] Expanding-window validation created: {len(splits)} fold(s)')
+    if not verbose:
+        print(f'[LOG] Expanding-window validation created: {len(splits)} fold(s)')
     return splits, summary
 
 
@@ -396,7 +409,7 @@ def tune_model(
     n_jobs=-1,
     verbose=True,
 ):
-    """Select hyperparameters by mean expanding-window validation MAE."""
+    """Select parameters; ``verbose=True`` suppresses progress logs."""
     if len(features) != len(target):
         raise ValueError('features and target must contain the same number of rows')
     if not splits:
@@ -412,7 +425,7 @@ def tune_model(
 
     fold_rows = []
     for candidate_number, params in enumerate(candidates, start=1):
-        if verbose:
+        if not verbose:
             print(
                 f'[LOG] {model_name}: candidate {candidate_number}/{len(candidates)} '
                 f'across {len(splits)} fold(s)'
@@ -461,10 +474,11 @@ def tune_model(
         fold_metrics.loc[fold_metrics['Candidate'].eq(best_candidate)]
         .reset_index(drop=True)
     )
-    print(
-        f"[LOG] {model_name}: selected candidate {best_candidate} "
-        f"(CV MAE={search_summary.loc[0, 'CV_MAE_mean']:.3f})"
-    )
+    if not verbose:
+        print(
+            f"[LOG] {model_name}: selected candidate {best_candidate} "
+            f"(CV MAE={search_summary.loc[0, 'CV_MAE_mean']:.3f})"
+        )
     return {
         'best_params': best_params,
         'best_candidate': best_candidate,
@@ -499,7 +513,7 @@ def run_experiment(
     n_jobs=-1,
     verbose=True,
 ):
-    """Tune on development folds, refit on all development data, and test once."""
+    """Tune, refit, and test once; ``verbose=True`` suppresses logs."""
     feature_columns = get_feature_columns(development_dataset)
     if feature_columns != get_feature_columns(test_dataset):
         raise ValueError('Development and test predictor columns do not match')
@@ -543,10 +557,12 @@ def run_experiment(
     predictions['Residual'] = predictions['Actual'] - predictions['Predicted']
     importance = extract_feature_importance(estimator, feature_columns)
 
-    print(
-        f"[LOG] {model_name}/{dataset_name}: test MAE={test_metrics['MAE']:.3f}, "
-        f"RMSE={test_metrics['RMSE']:.3f}, R2={test_metrics['R2']:.3f}"
-    )
+    if not verbose:
+        print(
+            f"[LOG] {model_name}/{dataset_name}: "
+            f"test MAE={test_metrics['MAE']:.3f}, "
+            f"RMSE={test_metrics['RMSE']:.3f}, R2={test_metrics['R2']:.3f}"
+        )
     return {
         'model_name': model_name.lower(),
         'dataset_name': dataset_name.lower(),
@@ -565,8 +581,8 @@ def run_experiment(
     }
 
 
-def evaluate_lag1_baseline(full_dataset, test_dataset):
-    """Evaluate previous-calendar-day recurrence persistence when observable."""
+def evaluate_lag1_baseline(full_dataset, test_dataset, verbose=True):
+    """Evaluate lag-1 persistence; ``verbose=True`` suppresses logs."""
     ordered = full_dataset.sort_values(DATE_COL).reset_index(drop=True)
     if ordered[DATE_COL].duplicated().any():
         raise ValueError('full_dataset must contain at most one row per date')
@@ -596,10 +612,12 @@ def evaluate_lag1_baseline(full_dataset, test_dataset):
         'Test_start': test_dataset[DATE_COL].min(),
         'Test_end': test_dataset[DATE_COL].max(),
     })
-    print(
-        f"[LOG] Lag-1 baseline: MAE={metrics['MAE']:.3f}, "
-        f"coverage={metrics['Coverage']:.1%} ({len(comparable)}/{len(predictions)} rows)"
-    )
+    if not verbose:
+        print(
+            f"[LOG] Lag-1 baseline: MAE={metrics['MAE']:.3f}, "
+            f"coverage={metrics['Coverage']:.1%} "
+            f"({len(comparable)}/{len(predictions)} rows)"
+        )
     return {'metrics': metrics, 'predictions': predictions}
 
 
@@ -629,8 +647,8 @@ def prepare_modeling_artifact_directories(output_dir):
     return directories
 
 
-def save_experiment_artifacts(experiment, output_dir):
-    """Persist a fitted model, parameters, metrics, predictions, and CV tables."""
+def save_experiment_artifacts(experiment, output_dir, verbose=True):
+    """Persist experiment artifacts, suppressing logs when ``verbose=True``."""
     destination = Path(output_dir)
     directories = prepare_modeling_artifact_directories(destination)
     stem = f"{experiment['model_name']}_{experiment['dataset_name']}"
@@ -669,7 +687,8 @@ def save_experiment_artifacts(experiment, output_dir):
         json.dumps(metadata, indent=2, ensure_ascii=False),
         encoding='utf-8',
     )
-    print(f'[LOG] Saved experiment artifacts under {destination}')
+    if not verbose:
+        print(f'[LOG] Saved experiment artifacts under {destination}')
     return paths
 
 

@@ -187,6 +187,7 @@ def train_mlp_experiment(
     the development partition. The best architecture is then fitted once per
     seed on all development rows. The final prediction is the mean of those
     replicas and the untouched holdout is evaluated only after refitting.
+    ``verbose=True`` suppresses logs throughout this workflow.
     """
     if experiment.get('model_name') != 'mlp':
         raise ValueError('train_mlp_experiment requires an MLP experiment')
@@ -311,7 +312,7 @@ def train_mlp_experiment(
     })
     predictions['Residual'] = predictions['Actual'] - predictions['Predicted']
 
-    if verbose:
+    if not verbose:
         print(
             f"[LOG] MLP/{experiment['feature_set']}: "
             f"test MAE={ensemble_metrics['MAE']:.3f}, "
@@ -398,8 +399,8 @@ def _build_checkpoint(experiment):
     }
 
 
-def save_mlp_experiment_artifacts(experiment, output_dir):
-    """Save an MLP checkpoint, metadata, metrics, validation, and diagnostics."""
+def save_mlp_experiment_artifacts(experiment, output_dir, verbose=True):
+    """Save MLP artifacts, suppressing path logs when ``verbose=True``."""
     if experiment.get('model_name') != 'mlp':
         raise ValueError('Only MLP experiment results can be saved here')
     directories = prepare_modeling_artifact_directories(Path(output_dir))
@@ -485,7 +486,8 @@ def save_mlp_experiment_artifacts(experiment, output_dir):
         json.dumps(metadata, indent=2, ensure_ascii=False),
         encoding='utf-8',
     )
-    print(f'[LOG] Saved MLP artifacts under {Path(output_dir)}')
+    if not verbose:
+        print(f'[LOG] Saved MLP artifacts under {Path(output_dir)}')
     return paths
 
 

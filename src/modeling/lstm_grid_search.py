@@ -245,7 +245,7 @@ def grid_search_lstm(
         param_grid: Mapping or list of mappings accepted by ``ParameterGrid``.
         seeds: Random seeds used to repeat each candidate and fold.
         device: PyTorch device name; defaults to CUDA when available, else CPU.
-        verbose: Whether to print candidate progress and the winning result.
+        verbose: Suppress logs when True; print progress when False.
 
     Returns:
         dict: Best parameters, seed-level and fold-level metrics, the ranked
@@ -297,7 +297,7 @@ def grid_search_lstm(
         params = {**DEFAULT_LSTM_PARAMS, **candidate}
         _validate_params(params)
         parameter_text = json.dumps(params, sort_keys=True)
-        if verbose:
+        if not verbose:
             print(
                 f'[LOG] LSTM candidate {candidate_number}/{len(candidates)} '
                 f'across {len(normalized_splits)} fold(s) and {len(seeds)} seed(s)'
@@ -416,7 +416,7 @@ def grid_search_lstm(
         .reset_index(drop=True)
     )
     search_seconds = perf_counter() - search_start
-    if verbose:
+    if not verbose:
         print(
             f'[LOG] LSTM selected candidate {best_candidate} '
             f"(CV MAE={search_summary.loc[0, 'CV_MAE_mean']:.3f}, "
