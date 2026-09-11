@@ -1,0 +1,48 @@
+{
+  "model": "xgboost",
+  "dataset": "simple",
+  "target": "recurrences_lt_30m",
+  "best_candidate": 6,
+  "best_params": {
+    "n_estimators": 500,
+    "learning_rate": 0.03,
+    "max_depth": 6,
+    "min_child_weight": 5,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_lambda": 5.0
+  },
+  "feature_columns": [
+    "Year",
+    "Month",
+    "Day",
+    "DayOfWeek",
+    "WeekOfYear",
+    "IsWeekend",
+    "GapFlag_lag1d",
+    "GapRunLength_lag1d",
+    "GapDays_last7d",
+    "GapDays_last30d",
+    "AlarmVolume_lag1d",
+    "AlarmVolume_lag3d",
+    "AlarmVolume_lag7d",
+    "AlarmVolume_lag14d",
+    "AlarmVolume_lag21d",
+    "AlarmVolume_lag28d"
+  ],
+  "development_start": "2020-02-08T00:00:00-03:00",
+  "development_end": "2024-05-16T00:00:00-03:00",
+  "test_metrics": {
+    "Rows": 359,
+    "MAE": 9.26721894907088,
+    "RMSE": 15.302343011911134,
+    "R2": 0.018724636669125494,
+    "PoissonDeviance": 13.147574839896896,
+    "MeanActual": 10.7966573816156,
+    "MeanPredicted": 10.828119791981901,
+    "Model": "xgboost",
+    "Dataset": "simple",
+    "Test_start": "2024-05-17T00:00:00-03:00",
+    "Test_end": "2025-05-16T00:00:00-03:00"
+  }
+}
