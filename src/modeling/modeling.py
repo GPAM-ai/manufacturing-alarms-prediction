@@ -28,6 +28,17 @@ NON_FEATURE_COLUMNS = {DATE_COL, TARGET_COL, TARGET_AVAILABLE_COL}
 DEFAULT_RANDOM_STATE = 42
 DEFAULT_TEST_DAYS = 365
 
+MODELING_ARTIFACT_SUBDIRECTORIES = {
+    'models': 'models',
+    'metadata': 'metadata',
+    'metrics': 'metrics',
+    'predictions': 'predictions',
+    'residuals': 'residuals',
+    'feature_importance': 'feature_importance',
+    'validation': 'validation',
+    'comparisons': 'comparisons',
+}
+
 RANDOM_FOREST_PARAM_CANDIDATES = (
     {
         'n_estimators': 300,
@@ -606,19 +617,33 @@ def build_model_comparison(experiments, baseline_result=None):
     )
 
 
+def prepare_modeling_artifact_directories(output_dir):
+    """Create and return the organized modeling-artifact directories."""
+    root = Path(output_dir)
+    directories = {
+        section: root / directory
+        for section, directory in MODELING_ARTIFACT_SUBDIRECTORIES.items()
+    }
+    for directory in directories.values():
+        directory.mkdir(parents=True, exist_ok=True)
+    return directories
+
+
 def save_experiment_artifacts(experiment, output_dir):
     """Persist a fitted model, parameters, metrics, predictions, and CV tables."""
     destination = Path(output_dir)
-    destination.mkdir(parents=True, exist_ok=True)
+    directories = prepare_modeling_artifact_directories(destination)
     stem = f"{experiment['model_name']}_{experiment['dataset_name']}"
 
     paths = {
-        'model': destination / f'{stem}.joblib',
-        'metadata': destination / f'{stem}_metadata.json',
-        'predictions': destination / f'{stem}_predictions.csv',
-        'feature_importance': destination / f'{stem}_feature_importance.csv',
-        'cv_search': destination / f'{stem}_cv_search.csv',
-        'cv_folds': destination / f'{stem}_cv_folds.csv',
+        'model': directories['models'] / f'{stem}.joblib',
+        'metadata': directories['metadata'] / f'{stem}_metadata.json',
+        'predictions': directories['predictions'] / f'{stem}_predictions.csv',
+        'feature_importance': (
+            directories['feature_importance'] / f'{stem}_feature_importance.csv'
+        ),
+        'cv_search': directories['validation'] / f'{stem}_cv_search.csv',
+        'cv_folds': directories['validation'] / f'{stem}_cv_folds.csv',
     }
     joblib.dump(experiment['estimator'], paths['model'])
     experiment['predictions'].to_csv(paths['predictions'], index=False)
@@ -644,16 +669,16 @@ def save_experiment_artifacts(experiment, output_dir):
         json.dumps(metadata, indent=2, ensure_ascii=False),
         encoding='utf-8',
     )
-    print(f'[LOG] Saved experiment artifacts with prefix {destination / stem}')
+    print(f'[LOG] Saved experiment artifacts under {destination}')
     return paths
 
 
 def save_baseline_artifacts(baseline_result, output_dir):
     """Persist lag-1 baseline predictions and metrics."""
     destination = Path(output_dir)
-    destination.mkdir(parents=True, exist_ok=True)
-    predictions_path = destination / 'lag1_baseline_predictions.csv'
-    metrics_path = destination / 'lag1_baseline_metrics.json'
+    directories = prepare_modeling_artifact_directories(destination)
+    predictions_path = directories['predictions'] / 'lag1_baseline_predictions.csv'
+    metrics_path = directories['metrics'] / 'lag1_baseline_metrics.json'
     baseline_result['predictions'].to_csv(predictions_path, index=False)
     serializable_metrics = {
         key: value.isoformat() if isinstance(value, pd.Timestamp) else value
