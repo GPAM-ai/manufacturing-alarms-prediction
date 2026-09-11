@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.patches as mpatches
 
-from src.db_preparation import save_plot
+from src.data_prep.db_preparation import save_plot
 
 
 CATEGORY_COLORS = {

@@ -1,7 +1,7 @@
 """Model training and evaluation for daily alarm-recurrence forecasting.
 
 The module compares Random Forest and XGBoost regressors using the simple and
-complete feature tables produced by ``feature_eng.py``. It provides helpers to
+complete feature tables produced by ``src.feat_eng.feature_eng``. It provides helpers to
 load the datasets, reserve a final calendar holdout, tune compact parameter
 sets with expanding windows, evaluate count predictions, inspect results, and
 save reproducible experiment artifacts.

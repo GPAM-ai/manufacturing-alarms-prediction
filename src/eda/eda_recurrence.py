@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
 import seaborn as sns
 
-from src.db_preparation import save_plot
-from src.eda_interalarm import compute_inter_alarm_time
+from src.data_prep.db_preparation import save_plot
+from src.eda.eda_interalarm import compute_inter_alarm_time
 
 
 DEFAULT_SHIFT_BOUNDS = (

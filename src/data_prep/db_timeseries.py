@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-from src.db_preparation import save_plot
+from src.data_prep.db_preparation import save_plot
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)

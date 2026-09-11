@@ -19,9 +19,9 @@ splits.
 import numpy as np
 import pandas as pd
 
-from src.db_preparation import clean_db
-from src.eda_exogen_variables import load_ipca_duraveis, load_selic
-from src.eda_interalarm import compute_inter_alarm_time
+from src.data_prep.db_preparation import clean_db
+from src.eda.eda_exogen_variables import load_ipca_duraveis, load_selic
+from src.eda.eda_interalarm import compute_inter_alarm_time
 
 
 TARGET_COL = 'recurrences_lt_30m'

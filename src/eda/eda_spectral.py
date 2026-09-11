@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from scipy import signal
 from scipy.fft import rfft, rfftfreq
 
-from src.db_preparation import save_plot
+from src.data_prep.db_preparation import save_plot
 
 
 DEFAULT_FREQUENCY_BANDS = (

@@ -6,9 +6,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from statsmodels.tsa.seasonal import seasonal_decompose
 
-# Reuses the generic PNG-saving helper already defined in db_preparation.py.
-# NOTE: Keep both files in the same directory.
-from src.db_preparation import sort_db, save_plot
+# Reuses the generic data-preparation and PNG-saving helpers.
+from src.data_prep.db_preparation import sort_db, save_plot
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)

@@ -1,5 +1,5 @@
 """
-Random Forest Training adapted for features_simple.csv
+Random Forest Training adapted for features_final.csv
 """
 
 import pandas as pd
@@ -9,9 +9,15 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, f
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-import os
+from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
+
+SRC_DIR = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = SRC_DIR.parent
+FEATURES_FILE = SRC_DIR / 'feat_eng' / 'features_final.csv'
+RAW_DATA_FILE = SRC_DIR / 'data' / 'alarm-logs-clean.csv'
+RESULTS_DIR = PROJECT_ROOT / 'results' / 'results'
 
 def mean_absolute_percentage_error(y_true, y_pred):
     y_true, y_pred = np.array(y_true), np.array(y_pred)
@@ -34,11 +40,11 @@ def compute_f1_score(y_true, y_pred, threshold=None):
     recall = recall_score(y_true_binary, y_pred_binary, zero_division=0)
     return f1, precision, recall, threshold
 
-print(f"Loading features_simple.csv...")
+print(f"Loading features_final.csv...")
 try:
-    df = pd.read_csv('features_simple.csv')
+    df = pd.read_csv(FEATURES_FILE)
 except FileNotFoundError:
-    print(f"File features_simple.csv not found. Please ensure it is in the same directory.")
+    print(f"File not found: {FEATURES_FILE}")
     exit(1)
 
 # Determine if this is a feature list or a dataset
@@ -49,9 +55,9 @@ if is_feature_list:
     feature_cols = df.iloc[:, 0].tolist()
     
     try:
-        df_raw = pd.read_csv('data/alarm-logs-clean.csv')
+        df_raw = pd.read_csv(RAW_DATA_FILE)
     except FileNotFoundError:
-        print("data/alarm-logs-clean.csv not found for feature extraction.")
+        print(f"File not found for feature extraction: {RAW_DATA_FILE}")
         exit(1)
         
     df_raw['TIMESTAMP'] = pd.to_datetime(df_raw['TIMESTAMP'], format='ISO8601', errors='coerce')
@@ -194,8 +200,8 @@ print("Feature Importance (Top 10)")
 print(f"{'='*50}")
 print(feature_importance.head(10).to_string())
 
-os.makedirs('../../results/results', exist_ok=True)
-suffix_name = 'simple'
+RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+suffix_name = 'final'
 
 plt.figure(figsize=(16, 6))
 plt.plot(range(len(y_test)), y_test.values, label='Actual', marker='o', alpha=0.7)
@@ -206,7 +212,7 @@ plt.ylabel('Number of Alarms')
 plt.legend()
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig(os.path.join('../../results/results', f'rf_{suffix_name}_predictions.png'), bbox_inches='tight')
+plt.savefig(RESULTS_DIR / f'rf_{suffix_name}_predictions.png', bbox_inches='tight')
 plt.close()
 
 residuals = y_test.values - y_pred_test
@@ -218,7 +224,7 @@ plt.xlabel('Predicted Values')
 plt.ylabel('Residuals')
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig(os.path.join('../../results/results', f'rf_{suffix_name}_residuals.png'), bbox_inches='tight')
+plt.savefig(RESULTS_DIR / f'rf_{suffix_name}_residuals.png', bbox_inches='tight')
 plt.close()
 
 plt.figure(figsize=(10, 6))
@@ -226,5 +232,5 @@ plt.barh(feature_importance['Feature'].head(10), feature_importance['Importance'
 plt.title(f'Top 10 Feature Importance ({suffix_name})', fontsize=14, fontweight='bold')
 plt.xlabel('Importance')
 plt.tight_layout()
-plt.savefig(os.path.join('../../results/results', f'rf_{suffix_name}_feature_importance.png'), bbox_inches='tight')
+plt.savefig(RESULTS_DIR / f'rf_{suffix_name}_feature_importance.png', bbox_inches='tight')
 plt.close()

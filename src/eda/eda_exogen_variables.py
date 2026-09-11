@@ -6,9 +6,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import pearsonr, spearmanr
 
-# Reuses the generic PNG-saving helper already defined in db_preparation.py.
-# NOTE: Keep both files in the same directory.
-from src.db_preparation import save_plot
+# Reuses the generic PNG-saving helper from data preparation.
+from src.data_prep.db_preparation import save_plot
 
 # Loading and standardizing exogenous variables
 
