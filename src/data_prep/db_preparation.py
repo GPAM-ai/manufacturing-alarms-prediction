@@ -128,7 +128,13 @@ def clean_db (db, subset=None, dedup=True, strip_strings=True,
 
     return db
 
-def save_cleaned_dataset(df_serie, output_path, timestamp_col='TIMESTAMP', columns=None):
+def save_cleaned_dataset(
+    df_serie,
+    output_path,
+    timestamp_col='TIMESTAMP',
+    columns=None,
+    verbose=True,
+):
     """Add temporal features (Year, Month, Day, Hour, DayOfWeek, WeekOfYear) to the
     dataset and save it to CSV.
 
@@ -155,12 +161,13 @@ def save_cleaned_dataset(df_serie, output_path, timestamp_col='TIMESTAMP', colum
         df_cleaned = df_cleaned[[col for col in columns if col in df_cleaned.columns]]
 
     df_cleaned.to_csv(output_path, index=False)
-    print(f"[LOG] Cleaned database saved to: {output_path}")
-    print(f"[LOG] Total records: {len(df_cleaned)}")
+    if not verbose:
+        print(f"[LOG] Cleaned database saved to: {output_path}")
+        print(f"[LOG] Total records: {len(df_cleaned)}")
 
     return df_cleaned
 
-def save_plot(save_path, dpi=150, bbox_inches='tight'):
+def save_plot(save_path, dpi=150, bbox_inches='tight', verbose=True):
     """Save the current matplotlib plot to a file.
     Args:
         save_path (str): Path to save the figure
@@ -173,4 +180,5 @@ def save_plot(save_path, dpi=150, bbox_inches='tight'):
     if directory:
         os.makedirs(directory, exist_ok=True)
     plt.savefig(save_path, dpi=dpi, bbox_inches=bbox_inches)
-    print(f"[LOG] Plot saved to: {save_path}")
+    if not verbose:
+        print(f"[LOG] Plot saved to: {save_path}")
