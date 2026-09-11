@@ -1,0 +1,62 @@
+{
+  "created_at_utc": "2026-09-11T13:18:29.824443+00:00",
+  "target": "recurrences_lt_30m",
+  "test_days": 365,
+  "initial_train_days": 730,
+  "validation_days": 180,
+  "step_days": 180,
+  "seeds": [
+    17,
+    42,
+    73
+  ],
+  "device_request": null,
+  "feature_counts": {
+    "simple": 16,
+    "complete": 36
+  },
+  "mlp": {
+    "method": "Optuna TPE with median pruning",
+    "n_trials": 30,
+    "max_epochs": 100,
+    "pruning_interval": 5,
+    "sampler_seed": 42,
+    "selection_metric": "mean expanding-window MAE"
+  },
+  "lstm": {
+    "method": "Grid Search",
+    "fixed_parameters": {
+      "window_size": 7,
+      "hidden_size": 32,
+      "num_layers": 1,
+      "dense_size": 32,
+      "dropout": 0.2,
+      "learning_rate": 0.001,
+      "weight_decay": 0.0,
+      "batch_size": 32,
+      "epochs": 100
+    },
+    "parameter_grid": {
+      "window_size": [
+        7,
+        14
+      ],
+      "hidden_size": [
+        32,
+        64
+      ],
+      "dropout": [
+        0.0,
+        0.2
+      ]
+    },
+    "selection_metric": "mean expanding-window MAE"
+  },
+  "versions": {
+    "python": "3.14.0",
+    "torch": "2.14.0+cpu",
+    "optuna": "5.0.0",
+    "pandas": "3.0.5",
+    "scikit_learn": "1.9.1"
+  }
+}
