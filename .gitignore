@@ -1,0 +1,15 @@
+src/data/
+data/
+docs/relatorio/
+src/__pycache__
+docs/paper/
+docs/notes
+.venv/
+.vscode/
+src/modeling/__pycache__
+src/feat_eng/features_final.csv
+src/feat_eng/features_simple.csv
+results/eda/grouped_countplots/
+results/eda/value_counts/
+results/modeling/feature_importance/
+docs/experimental_results/experiment_1/feature_importance/

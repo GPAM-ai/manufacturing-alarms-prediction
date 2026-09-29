@@ -134,7 +134,7 @@ Generated evidence is organized by purpose:
 - `results/modeling/metrics/`, `predictions/`, and `residuals/` contain final evaluation
   evidence;
 - `results/modeling/feature_importance/` documents the use of engineered attributes by tree
-  models;
+  models. This measure was redacted to hide sensitive information;
 - `results/modeling/models/` and `metadata/` preserve fitted estimators, neural checkpoints,
   feature order, parameters, and protocol information;
 - `results/modeling/comparisons/` consolidates model rankings and artifact manifests.

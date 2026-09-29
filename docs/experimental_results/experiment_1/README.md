@@ -7,7 +7,7 @@ Artifacts are grouped by their role in the modeling workflow:
 - `metrics/`: standalone evaluation metrics.
 - `predictions/`: prediction tables and observed-versus-predicted figures.
 - `residuals/`: residual diagnostic figures.
-- `feature_importance/`: feature-importance tables and figures.
+- `feature_importance/`: feature-importance tables and figures [REDACTED].
 - `validation/`: expanding-window searches, fold metrics, and holdout definitions.
 - `comparisons/`: consolidated comparisons across models and baselines.
 
